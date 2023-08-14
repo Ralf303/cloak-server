@@ -5,6 +5,7 @@ import path from "path";
 import { Server } from "socket.io";
 import {fileURLToPath} from 'url';
 import chatMessageService from "./services/chatMessage-service.js";
+import chatRouter from "./routers/chat-routers.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,18 +18,13 @@ const io = new Server(server);
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "cloak-client")));
-
-// обработчик запросов
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "cloak-client", "html", "chat.html"));
-});
-
+app.use("/chat", chatRouter)
 io.on('connection', (socket) => {
 
   socket.on('message', (msg) => {
     chatMessageService.sendMessage(socket, msg)
   });
-  
+
 });
 
 // Start the server
