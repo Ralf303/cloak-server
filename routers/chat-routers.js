@@ -1,8 +1,8 @@
 import { Router } from "express";
-import chatGetControlers from "../controlers/chat-controlers/chat-get-controlers.js";
+import sendController from "../controlers/sendPageControllers/sendController.js";
 
-const chatRouter = new Router()
+const chatRouter = new Router();
 
-chatRouter.get("/private", chatGetControlers.sendChat);
+chatRouter.get("/private", sendController.sendChat);
 
-  export default chatRouter
+export default chatRouter;
