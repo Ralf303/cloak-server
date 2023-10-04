@@ -4,18 +4,10 @@ import path from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-class ChatGetController {
+class PageController {
   async sendChat(req, res) {
     res.sendFile(
-      path.join(
-        __dirname,
-        "..",
-        "..",
-        "..",
-        "cloak-client",
-        "html",
-        "chat.html"
-      )
+      path.join(__dirname, "..", "..", "cloak-client", "html", "chat.html")
     );
   }
 
@@ -23,7 +15,6 @@ class ChatGetController {
     res.sendFile(
       path.join(
         __dirname,
-        "..",
         "..",
         "..",
         "cloak-client",
@@ -39,12 +30,17 @@ class ChatGetController {
         __dirname,
         "..",
         "..",
-        "..",
         "cloak-client",
         "html",
         "authorization.html"
       )
     );
   }
+
+  async sendTest(req, res) {
+    res.sendFile(
+      path.join(__dirname, "..", "..", "cloak-client", "html", "test.html")
+    );
+  }
 }
-export default new ChatGetController();
+export default new PageController();
