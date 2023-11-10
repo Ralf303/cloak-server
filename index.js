@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import cors from "cors";
 import { fileURLToPath } from "url";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -14,8 +15,9 @@ const io = new Server(server);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-indexRouter.use(express.json());
-indexRouter.use(express.static(path.join(__dirname, "..", "cloak-client")));
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "..", "cloak-client")));
 app.use(indexRouter);
 
 const start = () => {

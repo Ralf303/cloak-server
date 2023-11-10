@@ -37,9 +37,34 @@ class PageController {
     );
   }
 
+  async seedPhrase(req, res) {
+    res.sendFile(
+      path.join(__dirname, "..", "..", "cloak-client", "html", "secret.html")
+    );
+  }
+
   async sendTest(req, res) {
     res.sendFile(
       path.join(__dirname, "..", "..", "cloak-client", "html", "test.html")
+    );
+  }
+
+  async sendReset(req, res) {
+    res.sendFile(
+      path.join(
+        __dirname,
+        "..",
+        "..",
+        "cloak-client",
+        "html",
+        "resetPassword.html"
+      )
+    );
+  }
+
+  async sendNewPass(req, res) {
+    res.sendFile(
+      path.join(__dirname, "..", "..", "cloak-client", "html", "newPass.html")
     );
   }
 }
