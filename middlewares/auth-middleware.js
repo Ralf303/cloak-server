@@ -12,9 +12,10 @@ export default function (req, res, next) {
 
   try {
     const bearerToken = req.headers.token;
-
     if (!bearerToken) {
-      return res.status(403).json({ message: "Юзер не зарегистрирован" });
+      return res
+        .status(403)
+        .json({ status: false, message: "проблема с токеном(его нет)" });
     }
     const token = bearerToken.split(" ")[1];
     const decodeData = jwt.verify(token, process.env.KEY);
@@ -22,6 +23,8 @@ export default function (req, res, next) {
     next();
   } catch (error) {
     console.log(error);
-    return res.status(403).json({ message: "Юзер не зарегистрирован" });
+    return res
+      .status(403)
+      .json({ status: false, message: "проблема с токеном", error });
   }
 }

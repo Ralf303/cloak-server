@@ -1,7 +1,7 @@
 import { generate } from "random-words";
 import bcrypt from "bcryptjs";
 import jwtService from "../services/jwt-service.js";
-import User from "../db/user-model.js";
+import User from "../db/models/user-model.js";
 
 export default new (class AuthController {
   async registration(req, res) {
@@ -65,7 +65,7 @@ export default new (class AuthController {
       const user = await User.findOne({ where: id });
 
       if (user) {
-        return res.status(200).json({ status: true });
+        return res.status(200).json({ status: user });
       } else {
         return res.status(200).json({ status: false });
       }

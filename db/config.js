@@ -13,5 +13,6 @@ export default new Sequelize(
     host: process.env.HOST,
     port: process.env.PORT,
     dialect: "mysql",
+    logging: false,
   }
 );

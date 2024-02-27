@@ -27,6 +27,10 @@ const start = () => {
     socket.on("message", (msg) => {
       chatService.sendMessage(socket, msg);
     });
+
+    socket.on("delete", (msg) => {
+      chatService.deleteChat(socket, msg);
+    });
   });
 
   // Start the server

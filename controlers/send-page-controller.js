@@ -43,9 +43,9 @@ class PageController {
     );
   }
 
-  async sendTest(req, res) {
+  async sendChats(req, res) {
     res.sendFile(
-      path.join(__dirname, "..", "..", "cloak-client", "html", "test.html")
+      path.join(__dirname, "..", "..", "cloak-client", "html", "chats.html")
     );
   }
 
@@ -65,6 +65,12 @@ class PageController {
   async sendNewPass(req, res) {
     res.sendFile(
       path.join(__dirname, "..", "..", "cloak-client", "html", "newPass.html")
+    );
+  }
+
+  async sendSettings(req, res) {
+    res.sendFile(
+      path.join(__dirname, "..", "..", "cloak-client", "html", "settings.html")
     );
   }
 }
