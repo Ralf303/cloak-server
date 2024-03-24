@@ -6,7 +6,6 @@ export default new (class chatControler {
     try {
       const { user2 } = req.body;
       const chat = await dbService.createChat(req.user.id, user2);
-
       return res.status(200).json({ chatInfo: chat });
     } catch (e) {
       console.log(e);
@@ -17,7 +16,6 @@ export default new (class chatControler {
   async getChats(req, res) {
     try {
       const chats = await dbService.getChatsOnId(req.user.id);
-
       return res.status(200).json({ chats: chats, userId: req.user.id });
     } catch (e) {
       console.log(e);
@@ -28,7 +26,6 @@ export default new (class chatControler {
   async newMessage(req, res) {
     try {
       const { sender, receiver, text, data } = req.body;
-
       await chatsService.newMessage(sender, receiver, text, data);
       return res.status(200).json({ status: "ok" });
     } catch (e) {
@@ -50,9 +47,14 @@ export default new (class chatControler {
 
   async deleteChat(req, res) {
     try {
-      const { userOne, userTwo } = req.query;
+      let { userOne, userTwo } = req.query;
+
+      if (userOne === "Избранное") {
+        const status = await dbService.deleteMessages(userTwo);
+        return res.status(200).json({ status });
+      }
+
       const status = await dbService.deleteChat(userOne, userTwo);
-      console.log(status);
       return res.status(200).json({ status });
     } catch (e) {
       console.log(e);

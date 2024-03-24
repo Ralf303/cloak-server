@@ -2,6 +2,7 @@ import { generate } from "random-words";
 import bcrypt from "bcryptjs";
 import jwtService from "../services/jwt-service.js";
 import User from "../db/models/user-model.js";
+import dbService from "../services/db-service.js";
 
 export default new (class AuthController {
   async registration(req, res) {
@@ -26,6 +27,7 @@ export default new (class AuthController {
         words: words,
       });
       await user.save();
+      await dbService.createChat(user.id, user.username);
       return res.status(200).json({ message: true });
     } catch (error) {
       console.log(error);

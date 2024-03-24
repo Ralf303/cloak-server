@@ -5,7 +5,7 @@ config({
   path: process.env.NODE_ENV === "production" ? ".env.prod" : ".env.dev",
 });
 
-export default function (req, res, next) {
+export default (req, res, next) => {
   if (req.method === "OPTIONS") {
     next();
   }
@@ -27,4 +27,4 @@ export default function (req, res, next) {
       .status(403)
       .json({ status: false, message: "проблема с токеном", error });
   }
-}
+};

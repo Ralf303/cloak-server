@@ -26,6 +26,18 @@ export default new (class dbService {
     return chats;
   }
 
+  async changeUserPrivate(obj) {
+    try {
+      const { status, nick } = obj;
+
+      const user = await this.getUser(nick);
+      user.isPrivate = status;
+      await user.save();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async deleteChat(userOne, userTwo) {
     try {
       const user1 = await this.getUser(userOne);
@@ -47,6 +59,23 @@ export default new (class dbService {
     }
   }
 
+  async deleteMessages(user) {
+    try {
+      const user1 = await this.getUser(user);
+      const chat = await Chats.findOne({
+        where: { userOne: user1.id, userTwo: user1.id },
+      });
+      if (chat) {
+        await Message.destroy({ where: { chatId: chat.id } });
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async getMessages(userOne, userTwo) {
     try {
       if (userOne === "Избранное") {
@@ -55,7 +84,6 @@ export default new (class dbService {
       const user1 = await this.getUser(userOne);
       const user2 = await this.getUser(userTwo);
 
-      // Находим чат между указанными пользователями
       const chat = await Chats.findOne({
         where: sequelize.or(
           { userOne: user1.id, userTwo: user2.id },
@@ -64,7 +92,6 @@ export default new (class dbService {
       });
 
       if (chat) {
-        // Находим все сообщения в этом чате
         const messages = await Message.findAll({ where: { chatId: chat.id } });
         return messages;
       } else {
@@ -77,19 +104,13 @@ export default new (class dbService {
 
   async getChatOnUsernames(user1, user2) {
     try {
-      const userOneName = await this.getUser(user1);
-      const userTwoName = await this.getUser(user2);
+      const userOne = await this.getUser(user1);
+      const userTwo = await this.getUser(user2);
 
       const chat = await Chats.findOne({
         where: sequelize.or(
-          sequelize.and(
-            { userOne: userOneName.id },
-            { userTwo: userTwoName.id }
-          ),
-          sequelize.and(
-            { userOne: userTwoName.id },
-            { userTwo: userOneName.id }
-          )
+          sequelize.and({ userOne: userOne.id }, { userTwo: userTwo.id }),
+          sequelize.and({ userOne: userTwo.id }, { userTwo: userOne.id })
         ),
       });
 
@@ -116,27 +137,26 @@ export default new (class dbService {
 
   async createChat(userOne, userTwo) {
     try {
-      const isUserTwo = await User.findOne({ where: { username: userTwo } });
+      const isUserTwo = await this.getUser(userTwo);
 
-      if (isUserTwo) {
-        const checkChat = await Chats.findOne({
-          where: sequelize.or(
-            { userOne: userOne, userTwo: isUserTwo.id },
-            { userOne: isUserTwo.id, userTwo: userOne }
-          ),
-        });
-
-        if (checkChat) {
-          return { chat: checkChat, userTwo: isUserTwo.username };
-        } else {
-          const newChat = await Chats.create({
-            userOne: userOne,
-            userTwo: isUserTwo.id,
-          });
-          return { chat: newChat, userTwo: isUserTwo.username };
-        }
-      } else {
+      if (!isUserTwo) {
         return "Такого юзера несуществует";
+      }
+
+      if (isUserTwo.isPrivate) {
+        return "У юзера закрытый профиль, вы не можете ему написать первым.";
+      }
+
+      const checkChat = await this.getChatOnUsernames(userOne, isUserTwo.id);
+
+      if (checkChat) {
+        return { chat: checkChat, userTwo: isUserTwo.username };
+      } else {
+        const newChat = await Chats.create({
+          userOne: userOne,
+          userTwo: isUserTwo.id,
+        });
+        return { chat: newChat, userTwo: isUserTwo.username };
       }
     } catch (e) {
       console.log(e);

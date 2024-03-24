@@ -31,6 +31,10 @@ const start = () => {
     socket.on("delete", (msg) => {
       chatService.deleteChat(socket, msg);
     });
+
+    socket.on("changePrivate", async (msg) => {
+      await dbService.changeUserPrivate(msg);
+    });
   });
 
   // Start the server
