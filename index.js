@@ -1,19 +1,35 @@
 import express from "express";
 import path from "path";
 import cors from "cors";
+import { config } from "dotenv";
 import { fileURLToPath } from "url";
-import { createServer } from "http";
+import http from "http";
+import https from "https";
 import { Server } from "socket.io";
 import chatService from "./services/chatMessage-service.js";
 import dbService from "./services/db-service.js";
 import indexRouter from "./middlewares/index-middleware.js";
+config({
+  path: process.env.NODE_ENV === "production" ? ".env.prod" : ".env.dev",
+});
 
-const PORT = 80;
+const PORT = process.env.SERVER_PORT || 80;
 const app = express();
-const server = createServer(app);
-const io = new Server(server);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+let server;
+
+if (process.env.SERVER_PORT) {
+  const options = {
+    key: fs.readFileSync(process.env.SECRET_KEY),
+    cert: fs.readFileSync(process.env.SERTIFICATE),
+  };
+  server = https.createServer(options, app);
+} else {
+  server = http.createServer(app);
+}
+
+const io = new Server(server);
 
 app.use(cors());
 app.use(express.json());
