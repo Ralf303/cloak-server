@@ -73,5 +73,11 @@ class PageController {
       path.join(__dirname, "..", "..", "cloak-client", "html", "settings.html")
     );
   }
+
+  async sendIndex(req, res) {
+    res.sendFile(
+      path.join(__dirname, "..", "..", "cloak-client", "html", "index.html")
+    );
+  }
 }
 export default new PageController();

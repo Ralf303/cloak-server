@@ -19,6 +19,6 @@ indexRouter.use("/resetPassword", pageController.sendReset);
 indexRouter.use("/newPassword", pageController.sendNewPass);
 indexRouter.use("/chat", pageController.sendChat);
 indexRouter.use("/settings", pageController.sendSettings);
-indexRouter.use("*", pageController.sendChats);
+indexRouter.use("*", pageController.sendIndex);
 
 export default indexRouter;

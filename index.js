@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import http from "http";
 import https from "https";
 import { Server } from "socket.io";
+import { Telegraf } from "telegraf";
 import chatService from "./services/chatMessage-service.js";
 import dbService from "./services/db-service.js";
 import indexRouter from "./middlewares/index-middleware.js";
@@ -14,6 +15,7 @@ config({
   path: process.env.NODE_ENV === "production" ? ".env.prod" : ".env.dev",
 });
 
+const bot = new Telegraf(process.env.BOT_TOKEN);
 const PORT = process.env.SERVER_PORT || 80;
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -58,6 +60,9 @@ const start = () => {
   server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
+  bot.launch({ dropPendingUpdates: true });
 };
 
 start();
+
+export default bot;
